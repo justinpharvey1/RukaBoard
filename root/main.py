@@ -42,7 +42,6 @@ def homepage():
   oneBoard = cur.fetchone()
 
 
-  print "checkpoint 3"
 
 
   return render_template('index.html', boards=oneBoard)
