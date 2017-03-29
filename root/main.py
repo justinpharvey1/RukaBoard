@@ -40,7 +40,7 @@ def homepage():
 
   #Solar data 
   with conn.cursor() as cur:
-    cur.execute("select * from nodes where boardnumber=" + boardnumber)
+    cur.execute("select id, nodetext from nodes where boardnumber=" + boardnumber)
   nodes = cur.fetchall()
 
   print "nodes: ", nodes
@@ -48,6 +48,6 @@ def homepage():
 
 
 
-  return render_template('rukaboard.html', boardnumber=boardnumber, nodes=nodes)
+  return render_template('rukaboard.html', boardnumber=boardnumber, nodes=json.dumps(nodes))
 
 
