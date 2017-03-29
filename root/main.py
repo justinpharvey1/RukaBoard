@@ -32,18 +32,22 @@ except:
 
 
 
-@app.route('/')
-@app.route('/index.html')
+@app.route('/boards')
 def homepage():
+  boardnumber = str(request.args.get('boardnumber', ''))
+
+  print "BOARD NUMBER: ", boardnumber
 
   #Solar data 
   with conn.cursor() as cur:
-    cur.execute("select * from boards")
-  oneBoard = cur.fetchone()
+    cur.execute("select * from nodes where boardnumber=" + boardnumber)
+  nodes = cur.fetchall()
+
+  print "nodes: ", nodes
 
 
 
 
-  return render_template('index.html', boards=oneBoard)
+  return render_template('rukaboard.html', boardnumber=boardnumber, nodes=nodes)
 
 
