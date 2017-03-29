@@ -61,7 +61,6 @@
     {from: 1, to: 2},
     {from: 2, to: 4},
     {from: 2, to: 5},
-    {from: 3, to: 3}
   ]);
 
   // create a network
@@ -70,8 +69,34 @@
     nodes: nodes,
     edges: edges
   };
-  var options = {};
+
+  var interactions = {selectable: false}
+
+  var options = {
+    interaction: {
+      dragNodes:false
+      }
+      /*
+      labelayout: {
+        randomSeed: undefined,
+        improvedLayout:true,
+        hierarchical: {
+          enabled:true,
+          levelSeparation: 150,
+          nodeSpacing: 100,
+          treeSpacing: 200,
+          blockShifting: true,
+          edgeMinimization: true,
+          parentCentralization: true,
+          direction: 'UD',        // UD, DU, LR, RL
+          sortMethod: 'hubsize'   // hubsize, directed
+        }
+      }
+      */
+    };
+
   var network = new vis.Network(container, data, options);
+
 
 </script>
 

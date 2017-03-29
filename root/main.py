@@ -48,7 +48,6 @@ def homepage():
   nodeSet = []
 
   for node in nodes:
-    #node = "{id: " + str(node[0]) + ", " + "label: " + str(node[1]) + "}"
     node = str(node[0]) + ";" + str(node[1])
     nodeSet.append(node)
 
