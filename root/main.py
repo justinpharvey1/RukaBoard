@@ -45,9 +45,19 @@ def homepage():
 
   print "nodes: ", nodes
 
+  nodeSet = []
+
+  for node in nodes:
+    #node = "{id: " + str(node[0]) + ", " + "label: " + str(node[1]) + "}"
+    node = str(node[0]) + ";" + str(node[1])
+    nodeSet.append(node)
 
 
+  print "formatted nodes: ", nodeSet
 
-  return render_template('rukaboard.html', boardnumber=boardnumber, nodes=json.dumps(nodes))
+
+  return render_template('rukaboard.html', boardnumber=boardnumber, nodeSet=nodeSet)
+
+
 
 
