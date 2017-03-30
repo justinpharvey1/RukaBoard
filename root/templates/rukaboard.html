@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
 <head>
-  <title>Network | Basic usage</title>
+  <title>Ruka Board</title>
 
   <script type="text/javascript" src="../static/js/vis-4.19.1/dist/vis.js"></script>
   <link href="../static/js/vis-4.19.1/dist/vis-network.min.css" rel="stylesheet" type="text/css" />
@@ -57,10 +57,9 @@
 
   // create an array with edges
   var edges = new vis.DataSet([
-    {from: 1, to: 3},
+    {from: 1, to: 6},
     {from: 1, to: 2},
-    {from: 2, to: 4},
-    {from: 2, to: 5},
+    {from: 1, to: 5},
   ]);
 
   // create a network
@@ -70,30 +69,21 @@
     edges: edges
   };
 
-  var interactions = {selectable: false}
 
   var options = {
     interaction: {
-      dragNodes:false
+      selectable:false
+    },
+
+    layout: {
+      hierarchial: {
+        enabled:true,
+        nodeSpacing:300,
+        sortMethod:"directed"
       }
-      /*
-      labelayout: {
-        randomSeed: undefined,
-        improvedLayout:true,
-        hierarchical: {
-          enabled:true,
-          levelSeparation: 150,
-          nodeSpacing: 100,
-          treeSpacing: 200,
-          blockShifting: true,
-          edgeMinimization: true,
-          parentCentralization: true,
-          direction: 'UD',        // UD, DU, LR, RL
-          sortMethod: 'hubsize'   // hubsize, directed
-        }
-      }
-      */
-    };
+    }
+  };
+
 
   var network = new vis.Network(container, data, options);
 
