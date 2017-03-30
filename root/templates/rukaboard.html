@@ -30,20 +30,6 @@
 
 <script type="text/javascript">
 
-
-
-  
-
-
-
-  // create an array with nodes
-  //var nodes = new vis.DataSet([
-    //{id: 1, label: 'Node 1'},
-    //{id: 2, label: 'Node 2'},
-    //{id: 3, label: 'Node 3'},
-    //{id: 4, label: 'Node 4'},
-    //{id: 5, label: 'Node 5'}
-  //]);
   var nodesList = {{ nodeSet|safe }}
 
   var dataList = []
@@ -69,24 +55,58 @@
     edges: edges
   };
 
-
   var options = {
     interaction: {
-      selectable:false
+      selectable: true,
+      dragNodes: false
+    },
+
+    physics: {
+      enabled: false
+    },
+
+    /*
+    # configuration GUI
+    configure: {
+      filter: function (option, path) {
+        if (path.indexOf('hierarchical') !== -1) { 
+          return true;
+        }
+          return false;
+      },
+      showButton: false
+    },
+    */
+
+    manipulation: {
+      enabled: false,
+      initiallyActive: false
     },
 
     layout: {
-      hierarchial: {
+      hierarchical: {
         enabled:true,
-        nodeSpacing:300,
-        sortMethod:"directed"
+        nodeSpacing:150,
+        sortMethod:"directed",
+        direction: "UD"
       }
     }
   };
 
-
   var network = new vis.Network(container, data, options);
 
+  network.on("click", function (params) {
+    params.event = "[original event]";
+    console.log('<h2>Click event:</h2>' + JSON.stringify(params, null, 4));
+
+    //debugger;
+
+    if (params.nodes.length != 0) {
+      var addButton = document.createElement("div");
+      addButton.text = "DON"
+    }
+
+  });
 
 </script>
 
