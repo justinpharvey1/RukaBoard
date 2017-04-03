@@ -24,29 +24,55 @@
   The nodes on this board are: {{ nodeSet }}
 </p>
 
+<p>
+  The the relationship of these nodes are: {{ nodeGraph }}
+</p>
+
 <div id="mynetwork"></div>
 
 
 
 <script type="text/javascript">
 
+
+  //Define the nodes
   var nodesList = {{ nodeSet|safe }}
-
   var dataList = []
-
   for (var i = 0; i < nodesList.length; i++) {
     var split = nodesList[i].split(";")
     dataList.push({id: split[0], label: split[1]})
   }
-
   var nodes = new vis.DataSet(dataList)
 
-  // create an array with edges
-  var edges = new vis.DataSet([
-    {from: 1, to: 6},
-    {from: 1, to: 2},
-    {from: 1, to: 5},
-  ]);
+
+
+
+  // Define the graph
+  var nodeGraph = {{ nodeGraph|safe }}
+  var edgeGraph = []
+  for (var i=0; i < nodeGraph.length; i++){
+
+    if (nodeGraph[i] != "NO CHILDREN"){
+      var IDsplit = nodeGraph[i].split(";")
+      var childSplit = IDsplit[1].split(",")
+      for (var x=0; x<nodeGraph[i].length; x++){
+        edgeGraph.push({from: IDsplit[0], to: childSplit[x]})
+      }
+    }
+  }
+
+
+
+  var edges = new vis.DataSet(edgeGraph)
+  //var edges = new vis.DataSet([
+    //{from: 1, to: 6},
+    //{from: 1, to: 2},
+    //{from: 1, to: 5},
+  //]);
+
+
+
+
 
   // create a network
   var container = document.getElementById('mynetwork');

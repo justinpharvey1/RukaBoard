@@ -40,22 +40,41 @@ def homepage():
 
   #Solar data 
   with conn.cursor() as cur:
-    cur.execute("select id, nodetext from nodes where boardnumber=" + boardnumber)
+    cur.execute("select id, nodetext, parentnodes, childnodes from nodes where boardnumber=" + boardnumber)
   nodes = cur.fetchall()
 
   print "nodes: ", nodes
 
+
+
+  #format the node set
   nodeSet = []
 
   for node in nodes:
     node = str(node[0]) + ";" + str(node[1])
     nodeSet.append(node)
 
-
   print "formatted nodes: ", nodeSet
 
 
-  return render_template('rukaboard.html', boardnumber=boardnumber, nodeSet=nodeSet)
+
+
+
+  nodeGraph = []
+  for node in nodes:
+    print "node : ", node
+    if (len(node[3]) > 0): 
+      node = str(node[0]) + ";" + str(node[3])
+    else: 
+      node = "NO CHILDREN"
+    nodeGraph.append(node)
+
+  print "formatted nodeGraph: ", nodeGraph
+
+
+
+
+  return render_template('rukaboard.html', boardnumber=boardnumber, nodeSet=nodeSet, nodeGraph=nodeGraph)
 
 
 
