@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, url_for
 from flask import request
 from flask import render_template
 import requests
@@ -11,14 +11,12 @@ app = Flask(__name__)
 
 
 
-
 #Initialize the database 
 #rds settings
 rds_host  = "rukadb.c7ypyvkvt80b.us-west-2.rds.amazonaws.com"
 name = "masterusername"
 password = "masterpassword"
 db_name = "RukaDB"
-
 
 
 
@@ -32,34 +30,53 @@ except:
 
 
 
+@app.route('/votes', methods=['POST'])
+def contact():
+    if request.method == 'POST':
+
+        print "slkdfhsldkfj: ", request.form
+
+        nodeID = request.form['nodeID']
+
+        if request.form['voteType'] == 'upvote':
+            with conn.cursor() as cur:
+              cur.execute("update nodes set upvotes = upvotes + 1 where id=" + str(nodeID))
+              conn.commit()
+        if request.form['voteType'] == 'downvote':
+            with conn.cursor() as cur:
+              cur.execute("update nodes set downvotes = downvotes + 1 where id=" + str(nodeID))
+              conn.commit()
+
+  return 
+        
+
+
+
+
 @app.route('/boards')
 def homepage():
   boardnumber = str(request.args.get('boardnumber', ''))
 
   print "BOARD NUMBER: ", boardnumber
 
-  #Solar data 
+  #Board data
   with conn.cursor() as cur:
-    cur.execute("select id, nodetext, parentnodes, childnodes from nodes where boardnumber=" + boardnumber)
+    cur.execute("select id, nodetext, parentnodes, childnodes, upvotes, downvotes from nodes where boardnumber=" + boardnumber)
   nodes = cur.fetchall()
-
   print "nodes: ", nodes
 
 
 
   #format the node set
   nodeSet = []
-
   for node in nodes:
     node = str(node[0]) + ";" + str(node[1])
     nodeSet.append(node)
-
   print "formatted nodes: ", nodeSet
 
 
 
-
-
+  #format the node graph
   nodeGraph = []
   for node in nodes:
     print "node : ", node
@@ -68,13 +85,10 @@ def homepage():
     else: 
       node = "NO CHILDREN"
     nodeGraph.append(node)
-
   print "formatted nodeGraph: ", nodeGraph
 
 
-
-
-  return render_template('rukaboard.html', boardnumber=boardnumber, nodeSet=nodeSet, nodeGraph=nodeGraph)
+  return render_template('rukaboard.html', boardnumber=boardnumber, nodeSet=nodeSet, nodeGraph=nodeGraph, queryResponse=json.dumps(nodes))
 
 
 

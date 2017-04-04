@@ -1,169 +1,258 @@
-<!doctype html>
-<html>
-<head>
-  <title>Ruka Board</title>
+  <!doctype html>
+  <html>
+  <head>
+    <title>Ruka Board</title>
 
-  <script type="text/javascript" src="../static/js/vis-4.19.1/dist/vis.js"></script>
-  <link href="../static/js/vis-4.19.1/dist/vis-network.min.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="../static/js/vis-4.19.1/dist/vis.js"></script>
+    <link href="../static/js/vis-4.19.1/dist/vis-network.min.css" rel="stylesheet" type="text/css" />
 
-  <style type="text/css">
-    
+    <style type="text/css">
+
     #container {
       width: 100%;
       margin: auto;
-}
+    }
 
-    #leftblock {
+    #comments {
       width: 49%;
       float: left;
-      height: 300px;
+      height: 600px;
       border: 1px solid lightgray;
 
-}
+    }
     #mynetwork {
       width: 49%;
       float: right;
-      height: 300px;
+      height: 600px;
       border: 1px solid lightgray;
     }
 
-}
+  }
 
   </style>
 </head>
+
+
+
+
+
 <body>
 
-<p>
-  You are looking at board number: {{ boardnumber }}
-</p>
 
-<p>
-  The nodes on this board are: {{ nodeSet }}
-</p>
+  <p>
+    You are looking at board number: {{ boardnumber }}
+  </p>
 
-<p>
-  The the relationship of these nodes are: {{ nodeGraph }}
-</p>
+  <p>
+    The nodes on this board are: {{ nodeSet }}
+  </p>
+
+  <p>
+    The the relationship of these nodes are: {{ nodeGraph }}
+  </p>
 
 
-<div id="container">
+  <p>
+    The data is: {{ queryResponse|safe }}
+  </p>
 
-  <div id="leftblock">left block</div>
-  <div id="mynetwork"></div>
+
+
+
+
+  <div id="container">
+
+    <div id="comments">
+      <p id="parentcomment">Click any opinion to get started!</p>
+
+      <p id="upvotes"></p>
+      <button onclick="upvoteFunction()" type="submit" name="submit" value="upvote">agree</button>
   
-</div>
+
+      <p id="downvotes"></p> 
+      <button onclick="downvoteFunction()" type="submit" name="submit" value="downvote">agree</button>
+    </div>
+
+    <div id="mynetwork"></div>
+    
+  </div>
 
 
 
 
 
-<script type="text/javascript">
+  <script type="text/javascript">
 
 
-  //Define the nodes
-  var nodesList = {{ nodeSet|safe }}
-  var dataList = []
-  for (var i = 0; i < nodesList.length; i++) {
-    var split = nodesList[i].split(";")
-    dataList.push({id: split[0], label: split[1]})
-  }
-  var nodes = new vis.DataSet(dataList)
-
-
-
-
-  // Define the graph
-  var nodeGraph = {{ nodeGraph|safe }}
-  var edgeGraph = []
-  for (var i=0; i < nodeGraph.length; i++){
-
-    if (nodeGraph[i] != "NO CHILDREN"){
-      var IDsplit = nodeGraph[i].split(";")
-      var childSplit = IDsplit[1].split(",")
-      for (var x=0; x<nodeGraph[i].length; x++){
-        edgeGraph.push({from: IDsplit[0], to: childSplit[x]})
-      }
+    //Define the nodes
+    var nodesList = {{ nodeSet|safe }}
+    var dataList = []
+    for (var i = 0; i < nodesList.length; i++) {
+      var split = nodesList[i].split(";")
+      dataList.push({id: split[0], label: split[1]})
     }
-  }
-
-
-
-  var edges = new vis.DataSet(edgeGraph)
-  //var edges = new vis.DataSet([
-    //{from: 1, to: 6},
-    //{from: 1, to: 2},
-    //{from: 1, to: 5},
-  //]);
+    var nodes = new vis.DataSet(dataList)
 
 
 
 
+    // Define the graph
+    var nodeGraph = {{ nodeGraph|safe }}
+    var edgeGraph = []
+    for (var i=0; i < nodeGraph.length; i++){
 
-  // create a network
-  var container = document.getElementById('mynetwork');
-  var data = {
-    nodes: nodes,
-    edges: edges
-  };
-
-  var options = {
-    interaction: {
-      selectable: true,
-      dragNodes: false
-    },
-
-    physics: {
-      enabled: false
-    },
-
-    /*
-    # configuration GUI
-    configure: {
-      filter: function (option, path) {
-        if (path.indexOf('hierarchical') !== -1) { 
-          return true;
+      if (nodeGraph[i] != "NO CHILDREN"){
+        var IDsplit = nodeGraph[i].split(";")
+        var childSplit = IDsplit[1].split(",")
+        for (var x=0; x<nodeGraph[i].length; x++){
+          edgeGraph.push({from: IDsplit[0], to: childSplit[x]})
         }
-          return false;
-      },
-      showButton: false
-    },
-    */
-
-    manipulation: {
-      enabled: false,
-      initiallyActive: false
-    },
-
-    layout: {
-      hierarchical: {
-        enabled:true,
-        nodeSpacing:150,
-        sortMethod:"directed",
-        direction: "UD"
       }
     }
-  };
 
-  var network = new vis.Network(container, data, options);
 
-  network.on("click", function (params) {
-    params.event = "[original event]";
-    //console.log('<h2>Click event:</h2>' + JSON.stringify(params, null, 4));
-    debugger;
-    console.log(params.node)
-    //debugger;
 
-    if (params.nodes.length != 0) {
-      var addButton = document.createElement("div");
-      addButton.text = "DON"
+    var edges = new vis.DataSet(edgeGraph)
+    //var edges = new vis.DataSet([
+      //{from: 1, to: 6},
+      //{from: 1, to: 2},
+      //{from: 1, to: 5},
+    //]);
+
+
+
+
+
+    // create a network
+    var container = document.getElementById('mynetwork');
+    var data = {
+      nodes: nodes,
+      edges: edges
+    };
+
+    var options = {
+      interaction: {
+        selectable: true,
+        dragNodes: false
+      },
+
+      physics: {
+        enabled: false
+      },
+
+
+      manipulation: {
+        enabled: false,
+        initiallyActive: false
+      },
+
+      layout: {
+        hierarchical: {
+          enabled:true,
+          nodeSpacing:150,
+          sortMethod:"directed",
+          direction: "UD"
+        }
+      }
+    };
+    //Create a graph network
+    var network = new vis.Network(container, data, options);
+
+    var currentNode = 0
+
+
+    //Click event
+    network.on("click", function (params) {
+      params.event = "[original event]";
+      console.log('<h2>Click event:</h2>' + JSON.stringify(params, null, 4));
+      var queryResponse = {{ queryResponse|safe }}; 
+      console.log(queryResponse); 
+      activateNode(params.nodes, queryResponse); 
+      currentNode = params.nodes[0]
+    });
+
+
+    </script>
+
+
+
+
+
+    <script>
+
+    function activateNode(ID, nodes) {
+      //alert(JSON.stringify(ID[0]))
+      for (i=0; i < nodes.length; i++){
+        if (nodes[i][0] == ID[0]){
+          document.getElementById("parentcomment").innerHTML = JSON.stringify(nodes[i][1]); 
+          document.getElementById("upvotes").innerHTML = "agree: ".concat(JSON.stringify(nodes[i][4]));
+          document.getElementById("downvotes").innerHTML = "disagree: ".concat(JSON.stringify(nodes[i][5]));
+        }
+      }
     }
 
-  });
-
-</script>
 
 
+    function upvoteFunction(){
+      method = "post"; // Set method to post by default if not specified.
+      // The rest of this code assumes you are not using a library.
+      // It can be made less wordy if you use one.
+      var upvoteForm = document.createElement("form");
+      upvoteForm.setAttribute("method", method);
+      upvoteForm.setAttribute("action", "/votes");
+
+      var hiddenField = document.createElement("input");
+      hiddenField.setAttribute("type", "hidden");
+      hiddenField.setAttribute("name", "nodeID");
+      hiddenField.setAttribute("value", currentNode);
+      upvoteForm.appendChild(hiddenField);
+
+      var voteType = document.createElement("input");
+      voteType.setAttribute("type", "hidden");
+      voteType.setAttribute("name", "voteType");
+      voteType.setAttribute("value", "upvote");
+      upvoteForm.appendChild(voteType);
+
+      document.body.appendChild(upvoteForm);
+      upvoteForm.submit();
+    }
 
 
-</body>
-</html>
+
+
+
+    function downvoteFunction(){
+      method = "post"; // Set method to post by default if not specified.
+      // The rest of this code assumes you are not using a library.
+      // It can be made less wordy if you use one.
+      var upvoteForm = document.createElement("form");
+      upvoteForm.setAttribute("method", method);
+      upvoteForm.setAttribute("action", "/votes");
+
+      var hiddenField = document.createElement("input");
+      hiddenField.setAttribute("type", "hidden");
+      hiddenField.setAttribute("name", "nodeID");
+      hiddenField.setAttribute("value", currentNode);
+      upvoteForm.appendChild(hiddenField);
+
+      var voteType = document.createElement("input");
+      voteType.setAttribute("type", "hidden");
+      voteType.setAttribute("name", "voteType");
+      voteType.setAttribute("value", "downvote");
+      upvoteForm.appendChild(voteType);
+
+      document.body.appendChild(upvoteForm);
+      upvoteForm.submit();
+    }
+
+
+    </script>
+
+
+
+
+
+
+
+  </body>
+  </html>
