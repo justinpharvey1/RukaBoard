@@ -1,64 +1,58 @@
-  <!doctype html>
-  <html>
+<!doctype html>
+<html>
   <head>
+
+
     <title>Ruka Board</title>
+
+
+
 
     <script type="text/javascript" src="../static/js/vis-4.19.1/dist/vis.js"></script>
     <link href="../static/js/vis-4.19.1/dist/vis-network.min.css" rel="stylesheet" type="text/css" />
 
-    <style type="text/css">
 
-    #container {
-      width: 100%;
-      margin: auto;
-    }
 
-    #comments {
-      width: 49%;
-      float: left;
-      height: 600px;
-      border: 1px solid lightgray;
 
-    }
+      <style type="text/css">
+
+      #container {
+        width: 100%;
+        margin: auto;
+      }
+
+      #comments {
+        width: 49%;
+        float: left;
+        height: 600px;
+        border: 1px solid lightgray;
+
+      }
     #mynetwork {
-      width: 49%;
-      float: right;
-      height: 600px;
-      border: 1px solid lightgray;
+        width: 49%;
+        float: right;
+        height: 600px;
+        border: 1px solid lightgray;
     }
+
+    /* Add a black background color to the top navigation */
+    .topnav {
+        background-color: #333;
+        height: 40px;
+        overflow: hidden;
+}
 
   }
 
-  </style>
-</head>
+    </style>
+  </head>
 
 
+<div class="topnav" id="myTopnav"></div>
 
 
 
 <body>
-
-
-  <p>
-    You are looking at board number: {{ boardnumber }}
-  </p>
-
-  <p>
-    The nodes on this board are: {{ nodeSet }}
-  </p>
-
-  <p>
-    The the relationship of these nodes are: {{ nodeGraph }}
-  </p>
-
-
-  <p>
-    The data is: {{ queryResponse|safe }}
-  </p>
-
-
-
-
 
   <div id="container">
 
@@ -67,10 +61,12 @@
 
       <p id="upvotes"></p>
       <button onclick="upvoteFunction()" type="submit" name="submit" value="upvote">agree</button>
-  
 
       <p id="downvotes"></p> 
-      <button onclick="downvoteFunction()" type="submit" name="submit" value="downvote">agree</button>
+      <button onclick="downvoteFunction()" type="submit" name="submit" value="downvote" visibility="hidden">disagree</button>
+
+      <p id="posttext"></p>
+
     </div>
 
     <div id="mynetwork"></div>
@@ -187,6 +183,9 @@
           document.getElementById("parentcomment").innerHTML = JSON.stringify(nodes[i][1]); 
           document.getElementById("upvotes").innerHTML = "agree: ".concat(JSON.stringify(nodes[i][4]));
           document.getElementById("downvotes").innerHTML = "disagree: ".concat(JSON.stringify(nodes[i][5]));
+          document.getElementById("posttext").innerHTML = JSON.stringify(nodes[i][6]);
+
+
         }
       }
     }

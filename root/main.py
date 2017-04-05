@@ -1,4 +1,4 @@
-from flask import Flask, url_for
+from flask import Flask, url_for, redirect
 from flask import request
 from flask import render_template
 import requests
@@ -29,6 +29,16 @@ except:
 
 
 
+@app.route('/')
+def homepage(): 
+  with conn.cursor() as cur: 
+    cur.execute("select boardname, ID from boards")
+    boards = cur.fetchall()
+    return render_template("homepage.html", boards=boards)
+
+
+
+
 
 @app.route('/votes', methods=['POST'])
 def contact():
@@ -47,21 +57,25 @@ def contact():
               cur.execute("update nodes set downvotes = downvotes + 1 where id=" + str(nodeID))
               conn.commit()
 
-  return 
+    return redirect(url_for('boards'))
         
 
 
 
 
 @app.route('/boards')
-def homepage():
+def boards():
   boardnumber = str(request.args.get('boardnumber', ''))
+
+  if not (boardnumber):
+    boardnumber = 1
+
 
   print "BOARD NUMBER: ", boardnumber
 
   #Board data
   with conn.cursor() as cur:
-    cur.execute("select id, nodetext, parentnodes, childnodes, upvotes, downvotes from nodes where boardnumber=" + boardnumber)
+    cur.execute("select id, nodetitle, parentnodes, childnodes, upvotes, downvotes, nodetext from nodes where boardnumber=" + str(boardnumber))
   nodes = cur.fetchall()
   print "nodes: ", nodes
 

@@ -1,0 +1,33 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Ruka Board</title>
+      <style type="text/css">
+
+
+        /* Add a black background color to the top navigation */
+        .topnav {
+          background-color: #333;
+          height: 40px;
+          overflow: hidden;
+        }
+
+      </style>
+  </head>
+
+
+  <div class="topnav" id="myTopnav"></div>
+
+
+
+  <body>
+
+
+    {% for board in boards %}
+      <a href="boards?boardnumber={{ board[1] }}">{{ board[0] }}</a>
+      <p></p>
+    {% endfor %}
+
+
+  </body>
+</html>
