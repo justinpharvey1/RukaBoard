@@ -41,10 +41,10 @@ def homepage():
 
 
 @app.route('/votes', methods=['POST'])
-def contact():
+def votes():
     if request.method == 'POST':
 
-        print "slkdfhsldkfj: ", request.form
+        print "Vote: ", request.form
 
         nodeID = request.form['nodeID']
 
@@ -59,6 +59,21 @@ def contact():
 
     return redirect(url_for('boards'))
         
+
+
+
+
+@app.route('/addResponse', methods=['POST'])
+def addResponse():
+  if request.method == 'POST':
+
+    print "\n\nResponse: ", request.form
+    with conn.cursor() as cur: 
+      cur.execute("insert into nodes (nodetitle, boardnumber) values ('" + str(request.form['response']) + "'," + str(request.form['boardID']) + ")")
+      conn.commit()
+
+    return redirect(url_for('boards'))
+
 
 
 

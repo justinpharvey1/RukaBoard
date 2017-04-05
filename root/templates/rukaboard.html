@@ -28,15 +28,15 @@
         border: 1px solid lightgray;
 
       }
-    #mynetwork {
+      #mynetwork {
         width: 49%;
         float: right;
         height: 600px;
         border: 1px solid lightgray;
     }
 
-    /* Add a black background color to the top navigation */
-    .topnav {
+      /* Add a black background color to the top navigation */
+      .topnav {
         background-color: #333;
         height: 40px;
         overflow: hidden;
@@ -57,7 +57,7 @@
   <div id="container">
 
     <div id="comments">
-      <p id="parentcomment">Click any opinion to get started!</p>
+      <p id="parentcomment" style="font-weight:bold">Click any opinion to get started!</p>
 
       <p id="upvotes"></p>
       <button onclick="upvoteFunction()" type="submit" name="submit" value="upvote">agree</button>
@@ -66,11 +66,19 @@
       <button onclick="downvoteFunction()" type="submit" name="submit" value="downvote" visibility="hidden">disagree</button>
 
       <p id="posttext"></p>
+      <p></p>
+
+      <form id="responseForm" action="/addResponse" method="post">
+        <textarea rows="10" cols="100" name="response" form="responseForm">Your reply here...</textarea>
+        <select name="type">
+          <option value="agree">agree</option>
+          <option value="disagree">disagree</option>
+        </select>
+      </form>
+      <button onclick="responseFunction()" value="respond">reply</button>
 
     </div>
-
     <div id="mynetwork"></div>
-    
   </div>
 
 
@@ -155,6 +163,7 @@
     var network = new vis.Network(container, data, options);
 
     var currentNode = 0
+    var currentBoard = {{ boardnumber }}
 
 
     //Click event
@@ -180,10 +189,10 @@
       //alert(JSON.stringify(ID[0]))
       for (i=0; i < nodes.length; i++){
         if (nodes[i][0] == ID[0]){
-          document.getElementById("parentcomment").innerHTML = JSON.stringify(nodes[i][1]); 
+          document.getElementById("parentcomment").innerHTML = nodes[i][1]; 
           document.getElementById("upvotes").innerHTML = "agree: ".concat(JSON.stringify(nodes[i][4]));
           document.getElementById("downvotes").innerHTML = "disagree: ".concat(JSON.stringify(nodes[i][5]));
-          document.getElementById("posttext").innerHTML = JSON.stringify(nodes[i][6]);
+          document.getElementById("posttext").innerHTML = nodes[i][6];
 
 
         }
@@ -242,6 +251,30 @@
 
       document.body.appendChild(upvoteForm);
       upvoteForm.submit();
+    }
+
+
+
+    function responseFunction(){
+      method = "post"; // Set method to post by default if not specified.
+      // The rest of this code assumes you are not using a library.
+      // It can be made less wordy if you use one.
+      var responseForm = document.getElementById("responseForm");
+      responseForm.setAttribute("method", method);
+
+      var nodeField = document.createElement("input");
+      nodeField.setAttribute("type", "hidden");
+      nodeField.setAttribute("name", "nodeID");
+      nodeField.setAttribute("value", currentNode);
+      responseForm.appendChild(nodeField);
+
+      var boardField = document.createElement("input");
+      boardField.setAttribute("type", "hidden"); 
+      boardField.setAttribute("name", "boardID");
+      boardField.setAttribute("value", currentBoard);
+      responseForm.appendChild(boardField);
+
+      responseForm.submit();
     }
 
 
