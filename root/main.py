@@ -67,9 +67,24 @@ def votes():
 def addResponse():
   if request.method == 'POST':
 
+    #insert new post
     print "\n\nResponse: ", request.form
     with conn.cursor() as cur: 
       cur.execute("insert into nodes (nodetitle, boardnumber) values ('" + str(request.form['response']) + "'," + str(request.form['boardID']) + ")")
+      conn.commit()
+
+    #get ID of new post 
+    newChild = ""
+    with conn.cursor() as cur: 
+      cur.execute("select ID from nodes where nodetitle='" + str(request.form['response']) + "'")
+      newChild = "," + str(cur.fetchone()[0])
+
+    #update node graph with new ID
+    with conn.cursor() as cur: 
+      print "VALUE TEST: ", str(request.form['nodeID'])
+      queryStatement = "update nodes set childnodes=CONCAT(childnodes,'" + newChild + "') where id=" + str(request.form['nodeID'])
+      print "query statement: ", queryStatement
+      cur.execute(queryStatement)
       conn.commit()
 
     return redirect(url_for('boards'))
