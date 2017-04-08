@@ -70,13 +70,13 @@ def addResponse():
     #insert new post
     print "\n\nResponse: ", request.form
     with conn.cursor() as cur: 
-      cur.execute("insert into nodes (nodetitle, boardnumber) values ('" + str(request.form['response']) + "'," + str(request.form['boardID']) + ")")
+      cur.execute("insert into nodes (nodetitle, nodetext, boardnumber, nodetype) values ('" + str(request.form['responsetitle']) + "','" + str(request.form['responsetext']) + "'," + str(request.form['boardID']) + ",'" + str(request.form['type']) + "')")
       conn.commit()
 
     #get ID of new post 
     newChild = ""
     with conn.cursor() as cur: 
-      cur.execute("select ID from nodes where nodetitle='" + str(request.form['response']) + "'")
+      cur.execute("select ID from nodes where nodetitle='" + str(request.form['responsetitle']) + "'")
       newChild = "," + str(cur.fetchone()[0])
 
     #update node graph with new ID
@@ -96,6 +96,11 @@ def addResponse():
 @app.route('/boards')
 def boards():
   boardnumber = str(request.args.get('boardnumber', ''))
+  currentBoard = 0
+
+  if str(request.args.get('currentboard', '')):
+    currentBoard = str(request.args.get('currentboard', ''))
+
 
   if not (boardnumber):
     boardnumber = 1
@@ -132,8 +137,12 @@ def boards():
   print "formatted nodeGraph: ", nodeGraph
 
 
-  return render_template('rukaboard.html', boardnumber=boardnumber, nodeSet=nodeSet, nodeGraph=nodeGraph, queryResponse=json.dumps(nodes))
+  if currentBoard == 0:
+    return render_template('rukaboard.html', boardnumber=boardnumber, nodeSet=nodeSet, nodeGraph=nodeGraph, queryResponse=json.dumps(nodes))
 
+  else: 
+    return render_template('rukaboard.html', boardnumber=boardnumber, nodeSet=nodeSet, nodeGraph=nodeGraph, queryResponse=json.dumps(nodes), currentBoard=currentBoard)
+ 
 
 
 

@@ -5,7 +5,7 @@
 
     <title>Ruka Board</title>
 
-
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
 
 
     <script type="text/javascript" src="../static/js/vis-4.19.1/dist/vis.js"></script>
@@ -69,7 +69,8 @@
       <p></p>
 
       <form id="responseForm" action="/addResponse" method="post">
-        <textarea rows="10" cols="100" name="response" form="responseForm">Your reply here...</textarea>
+        <textarea rows="1" cols="20" name="responsetitle" form="responseForm" maxlength="13" required>Title text here...</textarea>
+        <textarea rows="10" cols="100" name="responsetext" form="responseForm" required>Body text here...</textarea>
         <select name="type">
           <option value="agree">agree</option>
           <option value="disagree">disagree</option>
